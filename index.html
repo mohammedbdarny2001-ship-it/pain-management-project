@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PainCare Assistant - Initial Layout</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800">
+  <header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div>
+        <h1 class="text-2xl font-bold text-blue-700">PainCare Assistant</h1>
+        <p class="text-sm text-slate-500">Initial HTML Layout Prototype - PainCare Assistant B12</p>
+      </div>
+      <nav class="flex flex-wrap gap-2 text-sm">
+        <a href="#report" class="px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">Pain Report</a>
+        <a href="#bot" class="px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">Chatbot</a>
+        <a href="#dashboard" class="px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">Doctor Dashboard</a>
+        <a href="#trends" class="px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">Trends</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    <section class="bg-white rounded-2xl shadow p-6">
+      <h2 class="text-xl font-bold mb-2">System Overview</h2>
+      <p class="text-slate-600 leading-relaxed">
+        This prototype demonstrates the first layout screens for a pain management web application.
+        It uses HTML, Tailwind CSS, pure JavaScript, and fake data to show patient pain reporting,
+        chatbot guidance, doctor dashboard information, pain trends, and high pain alerts.
+      </p>
+    </section>
+
+    <section id="report" class="grid lg:grid-cols-2 gap-6">
+      <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold">Daily Pain Report</h2>
+          <span class="text-xs px-3 py-1 rounded-full bg-blue-100 text-blue-700">Patient Screen</span>
+        </div>
+
+        <form id="painForm" class="space-y-4">
+          <div>
+            <label class="block font-medium mb-2" for="painLevel">Pain intensity: <span id="painValue" class="text-blue-700 font-bold">5</span>/10</label>
+            <input id="painLevel" type="range" min="0" max="10" value="5" class="w-full" />
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-medium mb-2" for="painLocation">Pain location</label>
+              <select id="painLocation" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option>Back</option>
+                <option>Head</option>
+                <option>Neck</option>
+                <option>Legs</option>
+                <option>Arms</option>
+                <option>Chest</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium mb-2" for="painType">Pain type</label>
+              <select id="painType" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option>Burning</option>
+                <option>Pressing</option>
+                <option>Stabbing</option>
+                <option>Numbness</option>
+                <option>Electric shock</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-medium mb-2" for="duration">Duration</label>
+              <input id="duration" type="text" placeholder="Example: 45 minutes" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+
+            <div>
+              <label class="block font-medium mb-2" for="medication">Medication taken?</label>
+              <select id="medication" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option>No</option>
+                <option>Yes</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-medium mb-2" for="notes">Notes</label>
+            <textarea id="notes" rows="3" placeholder="Write short notes about today’s pain..." class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+          </div>
+
+          <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition">
+            Submit Pain Report
+          </button>
+        </form>
+      </div>
+
+      <div class="space-y-6">
+        <div id="reportResult" class="hidden bg-white rounded-2xl shadow p-6 border-l-4 border-green-500">
+          <h3 class="text-lg font-bold text-green-700 mb-2">Report Submitted</h3>
+          <p id="reportText" class="text-slate-600"></p>
+        </div>
+
+        <div id="emergencyAlert" class="hidden bg-red-50 border border-red-200 rounded-2xl shadow p-6">
+          <h3 class="text-lg font-bold text-red-700 mb-2">High Pain Alert</h3>
+          <p class="text-red-700">
+            Pain level is 8 or higher. Please follow your clinic instructions and contact the clinic if needed.
+          </p>
+          <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">Contact Clinic</button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h3 class="text-lg font-bold mb-3">Medication Reminder</h3>
+          <p class="text-slate-600 mb-4">Next medication reminder based on fake data:</p>
+          <div class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <span class="font-medium">Painkiller dose</span>
+            <span class="text-amber-700 font-bold">20:00</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="bot" class="bg-white rounded-2xl shadow p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Pain Assistant Chatbot</h2>
+        <span class="text-xs px-3 py-1 rounded-full bg-purple-100 text-purple-700">Pure JS Interaction</span>
+      </div>
+
+      <div id="chatMessages" class="bg-slate-50 rounded-xl p-4 h-72 overflow-y-auto space-y-3 mb-4">
+        <div class="max-w-xl bg-white rounded-xl p-3 shadow-sm">
+          <p class="text-sm text-slate-500 mb-1">Assistant</p>
+          <p>Hello, I am here to help you manage your pain. How are you feeling today?</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <button onclick="botReply('Much better')" class="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300">Much better</button>
+        <button onclick="botReply('Same as yesterday')" class="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300">Same as yesterday</button>
+        <button onclick="botReply('Worse than usual')" class="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300">Worse than usual</button>
+        <button onclick="botReply('Pain is severe')" class="px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200">Pain is severe</button>
+      </div>
+    </section>
+
+    <section id="dashboard" class="bg-white rounded-2xl shadow p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Doctor Dashboard</h2>
+        <span class="text-xs px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Medical Staff Screen</span>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-blue-50 rounded-xl p-4">
+          <p class="text-sm text-slate-500">Total Patients</p>
+          <p id="totalPatients" class="text-3xl font-bold text-blue-700">0</p>
+        </div>
+        <div class="bg-red-50 rounded-xl p-4">
+          <p class="text-sm text-slate-500">High Pain Alerts</p>
+          <p id="highAlerts" class="text-3xl font-bold text-red-700">0</p>
+        </div>
+        <div class="bg-green-50 rounded-xl p-4">
+          <p class="text-sm text-slate-500">Average Pain Level</p>
+          <p id="avgPain" class="text-3xl font-bold text-green-700">0</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-600">
+              <th class="p-3">Patient</th>
+              <th class="p-3">Diagnosis</th>
+              <th class="p-3">Last Pain</th>
+              <th class="p-3">Medication</th>
+              <th class="p-3">Status</th>
+            </tr>
+          </thead>
+          <tbody id="patientsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="trends" class="bg-white rounded-2xl shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Pain Trends Summary</h2>
+      <p class="text-slate-600 mb-4">Simple visual trend using fake pain data.</p>
+      <div id="trendBars" class="flex items-end gap-3 h-56 bg-slate-50 rounded-xl p-4"></div>
+    </section>
+  </main>
+
+  <footer class="text-center text-sm text-slate-500 py-6">
+    B12 PainCare Assistant Project - HTML Layout Prototype
+  </footer>
+
+  <script>
+    const fakePatients = [
+      { name: "Miriam Cohen", diagnosis: "Chronic back pain", lastPain: 8, medication: "Yes", status: "High Alert" },
+      { name: "David Levi", diagnosis: "Neuropathic pain", lastPain: 5, medication: "No", status: "Stable" },
+      { name: "Roni Levy", diagnosis: "Neck disc pain", lastPain: 7, medication: "Yes", status: "Needs Follow-up" },
+      { name: "Sara Haddad", diagnosis: "Leg pain", lastPain: 3, medication: "No", status: "Stable" }
+    ];
+
+    const fakeTrend = [
+      { day: "Sun", pain: 6 },
+      { day: "Mon", pain: 7 },
+      { day: "Tue", pain: 5 },
+      { day: "Wed", pain: 8 },
+      { day: "Thu", pain: 6 },
+      { day: "Fri", pain: 4 },
+      { day: "Sat", pain: 5 }
+    ];
+
+    const painLevelInput = document.getElementById("painLevel");
+    const painValue = document.getElementById("painValue");
+    const painForm = document.getElementById("painForm");
+    const reportResult = document.getElementById("reportResult");
+    const reportText = document.getElementById("reportText");
+    const emergencyAlert = document.getElementById("emergencyAlert");
+
+    painLevelInput.addEventListener("input", () => {
+      painValue.textContent = painLevelInput.value;
+    });
+
+    painForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const painLevel = Number(painLevelInput.value);
+      const location = document.getElementById("painLocation").value;
+      const type = document.getElementById("painType").value;
+      const duration = document.getElementById("duration").value || "Not specified";
+      const medication = document.getElementById("medication").value;
+
+      reportResult.classList.remove("hidden");
+      reportText.textContent = `Pain report saved: level ${painLevel}/10, location: ${location}, type: ${type}, duration: ${duration}, medication taken: ${medication}.`;
+
+      if (painLevel >= 8) {
+        emergencyAlert.classList.remove("hidden");
+      } else {
+        emergencyAlert.classList.add("hidden");
+      }
+    });
+
+    function renderPatients() {
+      const table = document.getElementById("patientsTable");
+      table.innerHTML = "";
+
+      fakePatients.forEach((patient) => {
+        const isAlert = patient.lastPain >= 8;
+        const row = document.createElement("tr");
+        row.className = "border-b hover:bg-slate-50";
+        row.innerHTML = `
+          <td class="p-3 font-medium">${patient.name}</td>
+          <td class="p-3">${patient.diagnosis}</td>
+          <td class="p-3"><span class="px-3 py-1 rounded-full ${isAlert ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}">${patient.lastPain}/10</span></td>
+          <td class="p-3">${patient.medication}</td>
+          <td class="p-3">${patient.status}</td>
+        `;
+        table.appendChild(row);
+      });
+
+      const total = fakePatients.length;
+      const alerts = fakePatients.filter((p) => p.lastPain >= 8).length;
+      const average = (fakePatients.reduce((sum, p) => sum + p.lastPain, 0) / total).toFixed(1);
+
+      document.getElementById("totalPatients").textContent = total;
+      document.getElementById("highAlerts").textContent = alerts;
+      document.getElementById("avgPain").textContent = average;
+    }
+
+    function renderTrends() {
+      const trendBars = document.getElementById("trendBars");
+      trendBars.innerHTML = "";
+
+      fakeTrend.forEach((item) => {
+        const barHeight = item.pain * 18;
+        const wrapper = document.createElement("div");
+        wrapper.className = "flex-1 flex flex-col items-center gap-2";
+        wrapper.innerHTML = `
+          <div class="text-sm font-semibold">${item.pain}</div>
+          <div class="w-full bg-blue-500 rounded-t-lg" style="height: ${barHeight}px"></div>
+          <div class="text-xs text-slate-500">${item.day}</div>
+        `;
+        trendBars.appendChild(wrapper);
+      });
+    }
+
+    function botReply(answer) {
+      const chat = document.getElementById("chatMessages");
+
+      const userMessage = document.createElement("div");
+      userMessage.className = "max-w-xl ml-auto bg-blue-600 text-white rounded-xl p-3";
+      userMessage.innerHTML = `<p class="text-sm text-blue-100 mb-1">Patient</p><p>${answer}</p>`;
+      chat.appendChild(userMessage);
+
+      const botMessage = document.createElement("div");
+      botMessage.className = "max-w-xl bg-white rounded-xl p-3 shadow-sm";
+
+      if (answer === "Pain is severe") {
+        botMessage.innerHTML = `
+          <p class="text-sm text-slate-500 mb-1">Assistant</p>
+          <p>I am sorry you are experiencing severe pain. Please follow your clinic instructions and consider contacting the clinic.</p>
+        `;
+        emergencyAlert.classList.remove("hidden");
+      } else {
+        botMessage.innerHTML = `
+          <p class="text-sm text-slate-500 mb-1">Assistant</p>
+          <p>Thank you for the update. Please continue documenting your symptoms so the medical staff can review your progress.</p>
+        `;
+      }
+
+      chat.appendChild(botMessage);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    renderPatients();
+    renderTrends();
+  </script>
+</body>
+</html>
