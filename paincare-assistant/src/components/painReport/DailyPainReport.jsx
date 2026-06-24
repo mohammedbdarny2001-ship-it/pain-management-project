@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import {
   savePainReport,
   isHighPainLevel,
@@ -9,41 +9,72 @@ import EmergencyAlert from "./EmergencyAlert";
 import PainReportForm from "./PainReportForm";
 import SubmittedPainReport from "./SubmittedPainReport";
 
-function DailyPainReport() {
-  const { currentUser: user } = useUser();
-  const [formData, setFormData] = useState({
+const initialState = {
+  formData: {
     painLevel: 5,
     location: "",
     painType: "",
     duration: "",
     medicationTaken: "No",
     notes: "",
-  });
+  },
+  loading: false,
+  error: "",
+  submittedReport: null,
+  recommendation: null,
+};
 
-  const [submittedReport, setSubmittedReport] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [recommendation, setRecommendation] = useState(null);
+function reducer(state, action) {
+  switch (action.type) {
+    case "CHANGE_FIELD":
+      return {
+        ...state,
+        formData: { ...state.formData, [action.name]: action.value },
+      };
+    case "SUBMIT_START":
+      return { ...state, loading: true, error: "" };
+    case "SUBMIT_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        error: "",
+        submittedReport: action.report,
+        recommendation: action.recommendation,
+        formData: {
+          painLevel: 5,
+          location: "",
+          painType: "",
+          duration: "",
+          medicationTaken: "No",
+          notes: "",
+        },
+      };
+    case "SUBMIT_ERROR":
+      return { ...state, loading: false, error: action.message };
+    default:
+      return state;
+  }
+}
+
+function DailyPainReport() {
+  const { currentUser: user } = useUser();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { formData, loading, error, submittedReport, recommendation } = state;
 
   function handleChange(event) {
     const { name, value } = event.target;
-
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }));
+    dispatch({ type: "CHANGE_FIELD", name, value });
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
 
     if (!formData.location || !formData.painType || !formData.duration) {
-      setError("Please fill in pain location, type and duration");
+      dispatch({ type: "SUBMIT_ERROR", message: "Please fill in pain location, type and duration" });
       return;
     }
 
-    setLoading(true);
-    setError("");
+    dispatch({ type: "SUBMIT_START" });
 
     const reportData = {
       patientUsername: user.username,
@@ -57,23 +88,15 @@ function DailyPainReport() {
 
     const result = await savePainReport(reportData);
 
-    setLoading(false);
-
     if (!result.success) {
-      setError(result.message);
+      dispatch({ type: "SUBMIT_ERROR", message: result.message });
       return;
     }
 
-    setSubmittedReport(result.report);
-    setRecommendation(getSelfRecommendation(result.report));
-
-    setFormData({
-      painLevel: 5,
-      location: "",
-      painType: "",
-      duration: "",
-      medicationTaken: "No",
-      notes: "",
+    dispatch({
+      type: "SUBMIT_SUCCESS",
+      report: result.report,
+      recommendation: getSelfRecommendation(result.report),
     });
   }
 
@@ -99,12 +122,13 @@ function DailyPainReport() {
       />
 
       <SubmittedPainReport report={submittedReport} />
+
       {recommendation && (
         <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800">
           <p className="font-bold">{recommendation.title}</p>
           <p>{recommendation.message}</p>
         </div>
-        )}
+      )}
     </section>
   );
 }

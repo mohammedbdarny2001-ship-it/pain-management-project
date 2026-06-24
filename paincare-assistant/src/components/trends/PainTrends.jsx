@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getPainReportsByPatient } from "../../services/painReportService";
 import {
   sortReportsByDate,
@@ -36,8 +36,15 @@ function PainTrends() {
     loadPainReports();
   }, []);
 
-  const averagePain = getAveragePainLevel(reports);
-  const highestPainReport = getHighestPainReport(reports);
+  const averagePain = useMemo(
+    () => getAveragePainLevel(reports),
+    [reports]
+  );
+
+  const highestPainReport = useMemo(
+    () => getHighestPainReport(reports),
+    [reports]
+  );
 
   return (
     <section id="trends-section" className="bg-white rounded-2xl shadow p-6 scroll-mt-32">
