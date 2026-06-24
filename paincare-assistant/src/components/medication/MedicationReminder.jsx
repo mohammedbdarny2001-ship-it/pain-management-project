@@ -6,8 +6,10 @@ import {
   deleteMedicationReminder,
 } from "../../services/medicationService";
 import MedicationReminderCard from "./MedicationReminderCard";
+import { useUser } from "../../context/UserContext";
 
-function MedicationReminder({ user }) {
+function MedicationReminder() {
+  const { currentUser: user } = useUser();
   const [formData, setFormData] = useState({
     medicationName: "",
     dose: "",

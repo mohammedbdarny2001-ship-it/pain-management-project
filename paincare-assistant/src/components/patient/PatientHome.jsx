@@ -1,10 +1,13 @@
+import { useUser } from "../../context/UserContext";
 import Header from "../common/Header";
 import DailyPainReport from "../painReport/DailyPainReport";
 import MedicationReminder from "../medication/MedicationReminder";
 import PainAssistantChatbot from "../chatbot/PainAssistantChatbot";
 import PainTrends from "../trends/PainTrends";
 
-function PatientHome({ user, onLogout }) {
+function PatientHome() {
+  const { currentUser, logout } = useUser();
+
   return (
     <div className="min-h-screen bg-slate-100">
       <Header role="patient" />
@@ -14,22 +17,22 @@ function PatientHome({ user, onLogout }) {
           <div>
             <h2 className="text-xl font-bold text-blue-700">Patient Area</h2>
             <p className="text-sm text-blue-700">
-              Welcome, {user.name}. This page contains patient-related features.
+              Welcome, {currentUser.name}. This page contains patient-related features.
             </p>
           </div>
 
           <button
-            onClick={onLogout}
+            onClick={logout}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
             Logout
           </button>
         </div>
 
-        <DailyPainReport user={user} />
-        <MedicationReminder user={user} />
-        <PainAssistantChatbot user={user} />
-        <PainTrends user={user} />
+        <DailyPainReport />
+        <MedicationReminder />
+        <PainAssistantChatbot />
+        <PainTrends />
       </main>
     </div>
   );

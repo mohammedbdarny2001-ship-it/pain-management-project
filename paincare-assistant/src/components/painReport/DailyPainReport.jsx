@@ -2,11 +2,15 @@ import { useState } from "react";
 import {
   savePainReport,
   isHighPainLevel,
-  getEmergencyGuidance,
   getSelfRecommendation,
 } from "../../services/painReportService";
+import { useUser } from "../../context/UserContext";
+import EmergencyAlert from "./EmergencyAlert";
+import PainReportForm from "./PainReportForm";
+import SubmittedPainReport from "./SubmittedPainReport";
 
-function DailyPainReport({ user }) {
+function DailyPainReport() {
+  const { currentUser: user } = useUser();
   const [formData, setFormData] = useState({
     painLevel: 5,
     location: "",
@@ -84,115 +88,17 @@ function DailyPainReport({ user }) {
         medical staff review.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-medium mb-1">
-            Pain Level: {formData.painLevel}/10
-          </label>
-          <input
-            type="range"
-            name="painLevel"
-            min="0"
-            max="10"
-            value={formData.painLevel}
-            onChange={handleChange}
-            className="w-full"
-          />
-        </div>
+      {isHighPainLevel(formData.painLevel) && <EmergencyAlert />}
 
-        {isHighPainLevel(formData.painLevel) && (
-          <div className="bg-red-50 border border-red-300 text-red-700 rounded-lg p-4">
-            <p className="font-bold">Emergency Alert</p>
-            <p>{getEmergencyGuidance()}</p>
-          </div>
-        )}
+      <PainReportForm
+        reportData={formData}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        loading={loading}
+        error={error}
+      />
 
-        <div>
-          <label className="block font-medium mb-1">Pain Location</label>
-          <input
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2"
-            placeholder="Example: Lower back"
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium mb-1">Pain Type</label>
-          <select
-            name="painType"
-            value={formData.painType}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option value="">Select pain type</option>
-            <option value="Burning">Burning</option>
-            <option value="Pressing">Pressing</option>
-            <option value="Stabbing">Stabbing</option>
-            <option value="Sharp">Sharp</option>
-            <option value="Dull">Dull</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-medium mb-1">Duration</label>
-          <input
-            name="duration"
-            value={formData.duration}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2"
-            placeholder="Example: 45 minutes"
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium mb-1">Medication Taken</label>
-          <select
-            name="medicationTaken"
-            value={formData.medicationTaken}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-medium mb-1">Additional Notes</label>
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2"
-            rows="3"
-            placeholder="Describe anything important about today's pain"
-          />
-        </div>
-
-        {error && (
-          <p className="text-red-600 text-sm font-medium">{error}</p>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60"
-        >
-          {loading ? "Saving..." : "Submit Pain Report"}
-        </button>
-      </form>
-
-      {submittedReport && (
-        <div className="mt-6 bg-green-50 border border-green-300 rounded-lg p-4 text-green-700">
-          <p className="font-bold">Pain report saved successfully</p>
-          <p>
-            Pain level: {submittedReport.painLevel}/10 | Location:{" "}
-            {submittedReport.location}
-          </p>
-        </div>
-      )}
+      <SubmittedPainReport report={submittedReport} />
       {recommendation && (
         <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800">
           <p className="font-bold">{recommendation.title}</p>

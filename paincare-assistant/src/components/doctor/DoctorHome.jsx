@@ -1,7 +1,10 @@
+import { useUser } from "../../context/UserContext";
 import Header from "../common/Header";
 import DoctorDashboard from "../doctorDashboard/DoctorDashboard";
 
-function DoctorHome({ user, onLogout }) {
+function DoctorHome() {
+  const { currentUser, logout } = useUser();
+
   return (
     <div className="min-h-screen bg-slate-100">
       <Header role="doctor" />
@@ -11,19 +14,19 @@ function DoctorHome({ user, onLogout }) {
           <div>
             <h2 className="text-xl font-bold text-green-700">Doctor Area</h2>
             <p className="text-sm text-green-700">
-              Welcome, {user.name}. This page contains doctor-related features.
+              Welcome, {currentUser.name}. This page contains doctor-related features.
             </p>
           </div>
 
           <button
-            onClick={onLogout}
+            onClick={logout}
             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
           >
             Logout
           </button>
         </div>
 
-        <DoctorDashboard user={user} />
+        <DoctorDashboard />
       </main>
     </div>
   );

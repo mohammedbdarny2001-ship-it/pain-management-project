@@ -1,26 +1,22 @@
 function ChatMessage({ message }) {
-  const isPatient = message.role === "patient";
+  const isUser = message.sender === "user";
 
   return (
-    <div
-      className={
-        isPatient
-          ? "flex justify-end"
-          : "flex justify-start"
-      }
-    >
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={
-          isPatient
-            ? "bg-blue-600 text-white rounded-xl p-3 max-w-md"
-            : "bg-white border rounded-xl p-3 max-w-md shadow-sm"
-        }
+        className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
+          isUser
+            ? "bg-blue-600 text-white"
+            : "bg-white text-slate-700 border"
+        }`}
       >
-        <p className="text-xs mb-1 opacity-70">
-          {isPatient ? "Patient" : "Assistant"}
-        </p>
+        <p>{message.text}</p>
 
-        <p className="text-sm">{message.content}</p>
+        {!isUser && message.source && (
+          <p className="text-xs text-slate-400 mt-1">
+            Source: {message.source}
+          </p>
+        )}
       </div>
     </div>
   );

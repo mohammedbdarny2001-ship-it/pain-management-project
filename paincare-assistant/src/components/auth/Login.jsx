@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { loginUser } from "../../services/authService";
+import { useUser } from "../../context/UserContext";
 
-function Login({ onLogin, onShowRegister }) {
-  const [username, setUsername] = useState("patient1");
-  const [password, setPassword] = useState("1234");
+function Login({ onShowRegister }) {
+  const { login } = useUser();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +24,7 @@ function Login({ onLogin, onShowRegister }) {
       return;
     }
 
-    onLogin(result.user);
+    login(result.user);
   }
 
   return (

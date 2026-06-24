@@ -28,7 +28,8 @@ function SubmittedPainReport({ report }) {
       </p>
 
       <p className="text-sm">
-        <strong>Submitted at:</strong> {report.submittedAt}
+        <strong>Submitted at:</strong>{" "}
+        {report.submittedAt || new Date(report.createdAt).toLocaleString()}
       </p>
     </div>
   );

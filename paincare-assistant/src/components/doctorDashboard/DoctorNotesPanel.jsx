@@ -3,8 +3,10 @@ import {
   addDoctorNote,
   getDoctorNotesByPatient,
 } from "../../services/doctorNotesService";
+import { useUser } from "../../context/UserContext";
 
-function DoctorNotesPanel({ doctor, patients }) {
+function DoctorNotesPanel({ patients }) {
+  const { currentUser: doctor } = useUser();
   const [selectedPatient, setSelectedPatient] = useState("");
   const [noteText, setNoteText] = useState("");
   const [notes, setNotes] = useState([]);

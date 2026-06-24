@@ -6,8 +6,10 @@ import {
   getHighestPainReport,
 } from "../../services/trendsService";
 import TrendBarChart from "./TrendBarChart";
+import { useUser } from "../../context/UserContext";
 
-function PainTrends({ user }) {
+function PainTrends() {
+  const { currentUser: user } = useUser();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

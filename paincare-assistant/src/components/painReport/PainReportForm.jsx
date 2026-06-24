@@ -1,11 +1,10 @@
-function PainReportForm({ reportData, onChange, onSubmit }) {
+function PainReportForm({ reportData, onChange, onSubmit, loading, error }) {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm mb-1">
-          Pain intensity: {reportData.painLevel}/10
+        <label className="block font-medium mb-1">
+          Pain Level: {reportData.painLevel}/10
         </label>
-
         <input
           type="range"
           name="painLevel"
@@ -17,82 +16,80 @@ function PainReportForm({ reportData, onChange, onSubmit }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div>
-          <label className="block text-sm mb-1">Pain location</label>
-          <select
-            name="location"
-            value={reportData.location}
-            onChange={onChange}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option>Back</option>
-            <option>Head</option>
-            <option>Neck</option>
-            <option>Leg</option>
-            <option>Arm</option>
-            <option>Chest</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Pain type</label>
-          <select
-            name="painType"
-            value={reportData.painType}
-            onChange={onChange}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option>Burning</option>
-            <option>Pressing</option>
-            <option>Stabbing</option>
-            <option>Numbness</option>
-            <option>Electric shock</option>
-            <option>Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Duration</label>
-          <input
-            name="duration"
-            value={reportData.duration}
-            onChange={onChange}
-            placeholder="Example: 45 minutes"
-            className="w-full border rounded-lg px-3 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Medication taken?</label>
-          <select
-            name="medicationTaken"
-            value={reportData.medicationTaken}
-            onChange={onChange}
-            className="w-full border rounded-lg px-3 py-2"
-          >
-            <option>No</option>
-            <option>Yes</option>
-          </select>
-        </div>
+      <div>
+        <label className="block font-medium mb-1">Pain Location</label>
+        <input
+          name="location"
+          value={reportData.location}
+          onChange={onChange}
+          className="w-full border rounded-lg px-3 py-2"
+          placeholder="Example: Lower back"
+        />
       </div>
 
       <div>
-        <label className="block text-sm mb-1">Notes</label>
+        <label className="block font-medium mb-1">Pain Type</label>
+        <select
+          name="painType"
+          value={reportData.painType}
+          onChange={onChange}
+          className="w-full border rounded-lg px-3 py-2"
+        >
+          <option value="">Select pain type</option>
+          <option value="Burning">Burning</option>
+          <option value="Pressing">Pressing</option>
+          <option value="Stabbing">Stabbing</option>
+          <option value="Sharp">Sharp</option>
+          <option value="Dull">Dull</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block font-medium mb-1">Duration</label>
+        <input
+          name="duration"
+          value={reportData.duration}
+          onChange={onChange}
+          className="w-full border rounded-lg px-3 py-2"
+          placeholder="Example: 45 minutes"
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium mb-1">Medication Taken</label>
+        <select
+          name="medicationTaken"
+          value={reportData.medicationTaken}
+          onChange={onChange}
+          className="w-full border rounded-lg px-3 py-2"
+        >
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block font-medium mb-1">Additional Notes</label>
         <textarea
           name="notes"
           value={reportData.notes}
           onChange={onChange}
-          placeholder="Write short notes about today's pain..."
-          className="w-full border rounded-lg px-3 py-2 min-h-24"
+          className="w-full border rounded-lg px-3 py-2"
+          rows="3"
+          placeholder="Describe anything important about today's pain"
         />
       </div>
 
+      {error && (
+        <p className="text-red-600 text-sm font-medium">{error}</p>
+      )}
+
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700"
+        disabled={loading}
+        className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-60"
       >
-        Submit Pain Report
+        {loading ? "Saving..." : "Submit Pain Report"}
       </button>
     </form>
   );

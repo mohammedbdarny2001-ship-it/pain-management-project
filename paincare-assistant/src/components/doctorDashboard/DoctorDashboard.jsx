@@ -12,7 +12,7 @@ import PatientTable from "./PatientTable";
 import DoctorNotesPanel from "./DoctorNotesPanel";
 import PatientClinicalSummary from "./PatientClinicalSummary";
 
-function DoctorDashboard({ user }) {
+function DoctorDashboard() {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -85,7 +85,7 @@ function DoctorDashboard({ user }) {
 
           <PatientTable patients={patients} />
           <PatientClinicalSummary summaries={clinicalSummaries} />
-          <DoctorNotesPanel doctor={user} patients={patients} />
+          <DoctorNotesPanel patients={patients} />
         </>
       )}
     </section>

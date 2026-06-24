@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { registerPatient } from "../../services/authService";
+import { useUser } from "../../context/UserContext";
 
-function Register({ onRegister, onShowLogin }) {
+function Register({ onShowLogin }) {
+  const { login } = useUser();
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -26,7 +28,7 @@ function Register({ onRegister, onShowLogin }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
-
+    //fill all field condition
     if (
       !formData.name ||
       !formData.username ||
@@ -36,7 +38,12 @@ function Register({ onRegister, onShowLogin }) {
       setError("Please fill in all required fields");
       return;
     }
-
+    //age condition
+    if(formData.age && (formData.age <=0 || formData.age > 120)){
+      setError("Please enter a valid age");
+      return;
+    }
+    //passwords dont match condition
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -54,7 +61,7 @@ function Register({ onRegister, onShowLogin }) {
       return;
     }
 
-    onRegister(result.user);
+    login(result.user);
   }
 
   return (

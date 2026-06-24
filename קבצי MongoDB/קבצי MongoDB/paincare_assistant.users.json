@@ -1,0 +1,56 @@
+[{
+  "_id": {
+    "$oid": "6a351f1a2da5b9d369478784"
+  },
+  "username": "patient1",
+  "password": "1234",
+  "role": "patient",
+  "name": "Miriam Cohen",
+  "age": 45,
+  "diagnosis": "Chronic back pain",
+  "physician": "Dr. David Levi",
+  "createdAt": {
+    "$date": "2026-06-19T10:51:06.673Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-19T10:51:06.673Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a351f2e2da5b9d369478785"
+  },
+  "username": "doctor1",
+  "password": "1234",
+  "role": "doctor",
+  "name": "Dr. David Levi",
+  "diagnosis": "",
+  "physician": "",
+  "createdAt": {
+    "$date": "2026-06-19T10:51:26.577Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-19T10:51:26.577Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6a352ff1d209cbbd647e0bb7"
+  },
+  "username": "patient2",
+  "password": "1234",
+  "role": "patient",
+  "name": "Adel Bashir",
+  "age": 24,
+  "diagnosis": "Neuropathic pain",
+  "physician": "Dr. David Levi",
+  "createdAt": {
+    "$date": "2026-06-19T12:02:57.198Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-19T12:02:57.198Z"
+  },
+  "__v": 0
+}]

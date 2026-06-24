@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from "react";import { sendChatMessage } from "../../services/chatbotService";
+import { useEffect, useRef, useState } from "react";
+import { sendChatMessage } from "../../services/chatbotService";
 import { getPainReportsByPatient } from "../../services/painReportService";
+import { useUser } from "../../context/UserContext";
+import ChatMessage from "./ChatMessage";
+import QuickReplyButtons from "./QuickReplyButtons";
 
-function PainAssistantChatbot({ user }) {
+function PainAssistantChatbot() {
+  const { currentUser: user } = useUser();
   const [messages, setMessages] = useState([
     {
       sender: "bot",
@@ -106,28 +111,7 @@ function PainAssistantChatbot({ user }) {
 
       <div ref={chatBoxRef} className="h-80 overflow-y-auto overscroll-contain border rounded-xl p-4 bg-slate-50 space-y-3">
         {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              message.sender === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
-                message.sender === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-slate-700 border"
-              }`}
-            >
-              <p>{message.text}</p>
-
-              {message.sender === "bot" && message.source && (
-                <p className="text-xs text-slate-400 mt-1">
-                  Source: {message.source}
-                </p>
-              )}
-            </div>
-          </div>
+          <ChatMessage key={index} message={message} />
         ))}
 
         {loading && (
@@ -140,18 +124,11 @@ function PainAssistantChatbot({ user }) {
         
       </div>
 
-      <div className="flex flex-wrap gap-2 mt-4">
-        {quickMessages.map((quickMessage) => (
-          <button
-            key={quickMessage}
-            onClick={() => handleSend(quickMessage)}
-            className="text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-full"
-            disabled={loading}
-          >
-            {quickMessage}
-          </button>
-        ))}
-      </div>
+      <QuickReplyButtons
+        replies={quickMessages}
+        onReply={handleSend}
+        disabled={loading}
+      />
 
       <div className="flex gap-2 mt-4">
         <input
