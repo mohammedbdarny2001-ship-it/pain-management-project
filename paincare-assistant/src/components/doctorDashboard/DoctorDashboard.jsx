@@ -11,6 +11,7 @@ import AbnormalPainAlerts from "./AbnormalPainAlerts";
 import PatientTable from "./PatientTable";
 import DoctorNotesPanel from "./DoctorNotesPanel";
 import PatientClinicalSummary from "./PatientClinicalSummary";
+import DoctorAnalyticsCharts from "./DoctorAnalyticsCharts";
 
 function DoctorDashboard() {
   const [patients, setPatients] = useState([]);
@@ -80,6 +81,7 @@ function DoctorDashboard() {
             highPainCount={highPainPatients.length}
             averagePainLevel={averagePainLevel}
           />
+          <DoctorAnalyticsCharts patients={patients} />
 
           <AbnormalPainAlerts patients={highPainPatients} />
 

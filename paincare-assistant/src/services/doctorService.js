@@ -133,3 +133,279 @@ export function buildClinicalSummary(patients) {
     };
   });
 }
+
+export function buildDoctorAnalytics(patients, ageRiskLimit = 60) {
+  const patientList = Array.isArray(patients) ? patients : [];
+  const riskAge = Number(ageRiskLimit) || 60;
+
+  const olderPatients = patientList.filter((patient) => {
+    const age = Number(patient.age);
+    return Number.isFinite(age) && age >= riskAge;
+  });
+
+  const teenPatients = patientList.filter((patient) => {
+    const age = Number(patient.age);
+    return Number.isFinite(age) && age >= 13 && age <= 19;
+  });
+
+  const underTeenPatients = patientList.filter((patient) => {
+    const age = Number(patient.age);
+    return Number.isFinite(age) && age > 0 && age < 13;
+  });
+
+  const adultPatients = patientList.filter((patient) => {
+    const age = Number(patient.age);
+    return Number.isFinite(age) && age >= 20 && age < riskAge;
+  });
+
+  const unknownAgePatients = patientList.filter((patient) => {
+    const age = Number(patient.age);
+    return !Number.isFinite(age) || age <= 0;
+  });
+
+  const followUpPatients = patientList.filter((patient) => {
+    return (
+      patient.status === "High Alert" ||
+      patient.status === "Needs Follow-up"
+    );
+  });
+
+  return {
+    olderPatientsCount: olderPatients.length,
+    teenPatientsCount: teenPatients.length,
+    followUpPatientsCount: followUpPatients.length,
+
+    ageGroups: [
+      { label: "Children under 13", value: underTeenPatients.length },
+      { label: "Teenagers 13-19", value: teenPatients.length },
+      { label: `Adults 20-${riskAge - 1}`, value: adultPatients.length },
+      { label: `Age ${riskAge}+`, value: olderPatients.length },
+      { label: "Unknown age", value: unknownAgePatients.length },
+    ],
+
+    monitoringPriorityGroups: buildMonitoringPriorityGroups(
+      patientList,
+      riskAge
+    ),
+
+    painLevelGroups: buildPainLevelGroups(patientList),
+    statusGroups: buildStatusGroups(patientList),
+    reportActivityGroups: buildReportActivityGroups(patientList),
+    medicationGroups: buildMedicationGroups(patientList),
+    recentReportGroups: buildRecentReportGroups(patientList),
+  };
+}
+
+function buildMonitoringPriorityGroups(patients, riskAge) {
+  const highPainPatients = patients.filter((patient) => {
+    return hasPainReport(patient) && Number(patient.lastPain) >= 7;
+  });
+
+  const ageRiskPatients = patients.filter((patient) => {
+    return Number(patient.age) >= riskAge;
+  });
+
+  const teenPatients = patients.filter((patient) => {
+    const age = Number(patient.age);
+    return age >= 13 && age <= 19;
+  });
+
+  const medicationNotTakenPatients = patients.filter((patient) => {
+    return normalizeMedicationTaken(patient.medicationTaken) === "notTaken";
+  });
+
+  const lowReportActivityPatients = patients.filter((patient) => {
+    return Number(patient.reportsCount) <= 1;
+  });
+
+  return [
+    {
+      label: "High pain 7+",
+      value: highPainPatients.length,
+    },
+    {
+      label: `Age ${riskAge}+`,
+      value: ageRiskPatients.length,
+    },
+    {
+      label: "Teenagers 13-19",
+      value: teenPatients.length,
+    },
+    {
+      label: "Medication not taken",
+      value: medicationNotTakenPatients.length,
+    },
+    {
+      label: "Low report activity",
+      value: lowReportActivityPatients.length,
+    },
+  ];
+}
+
+function buildPainLevelGroups(patients) {
+  return [
+    {
+      label: "No reports",
+      value: patients.filter((patient) => !hasPainReport(patient)).length,
+    },
+    {
+      label: "Mild pain 0-3",
+      value: patients.filter((patient) => {
+        return (
+          hasPainReport(patient) &&
+          Number(patient.lastPain) >= 0 &&
+          Number(patient.lastPain) <= 3
+        );
+      }).length,
+    },
+    {
+      label: "Moderate pain 4-6",
+      value: patients.filter((patient) => {
+        return (
+          hasPainReport(patient) &&
+          Number(patient.lastPain) >= 4 &&
+          Number(patient.lastPain) <= 6
+        );
+      }).length,
+    },
+    {
+      label: "Severe pain 7-10",
+      value: patients.filter((patient) => {
+        return hasPainReport(patient) && Number(patient.lastPain) >= 7;
+      }).length,
+    },
+  ];
+}
+
+function buildStatusGroups(patients) {
+  return [
+    {
+      label: "High Alert",
+      value: patients.filter((patient) => patient.status === "High Alert")
+        .length,
+    },
+    {
+      label: "Needs Follow-up",
+      value: patients.filter(
+        (patient) => patient.status === "Needs Follow-up"
+      ).length,
+    },
+    {
+      label: "Stable",
+      value: patients.filter((patient) => patient.status === "Stable").length,
+    },
+    {
+      label: "No Reports",
+      value: patients.filter((patient) => patient.status === "No Reports")
+        .length,
+    },
+  ];
+}
+
+function buildReportActivityGroups(patients) {
+  return [
+    {
+      label: "No reports",
+      value: patients.filter((patient) => Number(patient.reportsCount) === 0)
+        .length,
+    },
+    {
+      label: "1-2 reports",
+      value: patients.filter((patient) => {
+        const count = Number(patient.reportsCount);
+        return count >= 1 && count <= 2;
+      }).length,
+    },
+    {
+      label: "3-5 reports",
+      value: patients.filter((patient) => {
+        const count = Number(patient.reportsCount);
+        return count >= 3 && count <= 5;
+      }).length,
+    },
+    {
+      label: "6+ reports",
+      value: patients.filter((patient) => Number(patient.reportsCount) >= 6)
+        .length,
+    },
+  ];
+}
+
+function buildMedicationGroups(patients) {
+  return [
+    {
+      label: "Medication taken",
+      value: patients.filter((patient) => {
+        return normalizeMedicationTaken(patient.medicationTaken) === "taken";
+      }).length,
+    },
+    {
+      label: "Medication not taken",
+      value: patients.filter((patient) => {
+        return normalizeMedicationTaken(patient.medicationTaken) === "notTaken";
+      }).length,
+    },
+    {
+      label: "No medication data",
+      value: patients.filter((patient) => {
+        return normalizeMedicationTaken(patient.medicationTaken) === "unknown";
+      }).length,
+    },
+  ];
+}
+
+function hasPainReport(patient) {
+  return patient.lastPain !== null && patient.lastPain !== undefined;
+}
+
+function normalizeMedicationTaken(value) {
+  const normalizedValue = String(value || "").trim().toLowerCase();
+
+  if (normalizedValue === "yes") {
+    return "taken";
+  }
+
+  if (normalizedValue === "no") {
+    return "notTaken";
+  }
+
+  return "unknown";
+}
+function buildRecentReportGroups(patients) {
+  const today = new Date();
+
+  const reportedRecently = patients.filter((patient) => {
+    if (!patient.lastReportDate) {
+      return false;
+    }
+
+    const reportDate = new Date(patient.lastReportDate);
+    const diffInMs = today - reportDate;
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    return diffInDays <= 7;
+  });
+
+  const notReportedRecently = patients.filter((patient) => {
+    if (!patient.lastReportDate) {
+      return true;
+    }
+
+    const reportDate = new Date(patient.lastReportDate);
+    const diffInMs = today - reportDate;
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    return diffInDays > 7;
+  });
+
+  return [
+    {
+      label: "Reported in last 7 days",
+      value: reportedRecently.length,
+    },
+    {
+      label: "No recent report",
+      value: notReportedRecently.length,
+    },
+  ];
+}
