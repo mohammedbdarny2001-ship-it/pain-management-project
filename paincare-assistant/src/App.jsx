@@ -4,6 +4,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import PatientHome from "./components/patient/PatientHome";
 import DoctorHome from "./components/doctor/DoctorHome";
+import AdminDoctorRegister from "./components/admin/AdminDoctorRegister";
 
 function App() {
   const { currentUser } = useUser();
@@ -30,6 +31,10 @@ function App() {
   if (currentUser.role === "doctor") {
     return <DoctorHome />;
   }
+
+  if (currentUser.role === "admin") {
+    return <AdminDoctorRegister />;
+}
 
   return null;
 }

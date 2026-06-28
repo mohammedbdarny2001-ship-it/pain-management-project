@@ -79,6 +79,20 @@ function Login({ onShowRegister }) {
           New patient? Register here
         </button>
 
+        <button
+          type="button"
+          onClick={() =>
+            login({
+              username: "admin1",
+              role: "admin",
+              name: "Admin",
+            })
+          }
+          className="w-full mt-2 text-purple-700 font-medium hover:underline"
+        >
+          Login as Admin
+        </button>
+
         <div className="mt-6 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
           <p className="font-semibold mb-1">Demo users:</p>
           <p>

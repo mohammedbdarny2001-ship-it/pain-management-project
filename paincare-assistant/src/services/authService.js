@@ -69,6 +69,7 @@ export async function registerPatient(patientData) {
     };
   }
 }
+
 export async function updateUserProfile(username, profileData) {
   try {
     const response = await fetch(`${API_URL}/${username}`, {
@@ -92,6 +93,44 @@ export async function updateUserProfile(username, profileData) {
       success: true,
       user: data.user,
       message: data.message,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Cannot connect to server",
+    };
+  }
+}
+
+export async function registerDoctor(doctorData) {
+  try {
+    const response = await fetch(`${API_URL}/register-doctor`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: doctorData.username,
+        password: doctorData.password,
+        name: doctorData.name,
+        specialization: doctorData.specialization,
+        phone: doctorData.phone,
+        email: doctorData.email,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Doctor registration failed",
+      };
+    }
+
+    return {
+      success: true,
+      doctor: data.doctor,
     };
   } catch (error) {
     return {

@@ -59,6 +59,61 @@ router.post("/register", async (req, res) => {
   }
 });
 
+
+// Register new doctor by admin
+router.post("/register-doctor", async (req, res) => {
+  try {
+    const { username, password, name, specialization, phone, email } = req.body;
+
+    if (!username || !password || !name || !specialization) {
+      return res.status(400).json({
+        success: false,
+        message: "Username, password, name and specialization are required",
+      });
+    }
+
+    const existingUser = await User.findOne({ username });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already exists",
+      });
+    }
+
+    const newDoctor = new User({
+      username,
+      password,
+      role: "doctor",
+      name,
+      specialization,
+      phone,
+      email,
+    });
+
+    await newDoctor.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Doctor registered successfully",
+      doctor: {
+        username: newDoctor.username,
+        role: newDoctor.role,
+        name: newDoctor.name,
+        specialization: newDoctor.specialization,
+        phone: newDoctor.phone,
+        email: newDoctor.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while registering doctor",
+      error: error.message,
+    });
+  }
+});
+
 // Login user
 router.post("/login", async (req, res) => {
   try {
