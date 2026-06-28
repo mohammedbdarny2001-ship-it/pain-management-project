@@ -13,8 +13,14 @@ export function UserProvider({ children }) {
     setCurrentUser(null);
   }
 
+  function updateCurrentUser(updatedUser) {
+    setCurrentUser(updatedUser);
+  }
+
   return (
-    <UserContext.Provider value={{ currentUser, login, logout }}>
+    <UserContext.Provider
+      value={{ currentUser, login, logout, updateCurrentUser }}
+    >
       {children}
     </UserContext.Provider>
   );

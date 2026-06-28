@@ -1,4 +1,4 @@
-function Header({ role }) {
+function Header({ role, onOpenPersonalArea }) {
   function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
 
@@ -46,6 +46,22 @@ function Header({ role }) {
             >
               Clinical Summary
             </button>
+
+            <button
+              onClick={() => scrollToSection("doctor-notes-section")}
+              className="bg-blue-100 text-blue-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-blue-200"
+            >
+              Doctor Notes
+            </button>
+
+            <button
+               onClick={onOpenPersonalArea}
+               className="bg-yellow-100 text-yellow-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-yellow-200"
+            >
+               Personal Area
+            </button>
+
+            
           </div>
         </div>
       </header>
@@ -75,6 +91,13 @@ function Header({ role }) {
           </button>
 
           <button
+            onClick={() => scrollToSection("doctor-notes-section")}
+            className="bg-orange-100 text-orange-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-orange-200"
+          >
+            Doctor Notes
+          </button>
+
+          <button
             onClick={() => scrollToSection("chatbot-section")}
             className="bg-purple-100 text-purple-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-purple-200"
           >
@@ -87,6 +110,14 @@ function Header({ role }) {
           >
             Trends
           </button>
+
+          <button
+             onClick={onOpenPersonalArea}
+             className="bg-yellow-100 text-yellow-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-yellow-200"
+           >
+             Personal Area
+           </button>
+
         </div>
       </div>
     </header>

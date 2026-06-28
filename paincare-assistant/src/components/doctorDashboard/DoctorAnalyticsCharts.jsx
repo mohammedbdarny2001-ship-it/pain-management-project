@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { buildDoctorAnalytics } from "../../services/doctorService";
 import DashboardBarChart from "./DashboardBarChart";
+import DashboardPieChart from "./DashboardPieChart";
+import DashboardLineChart from "./DashboardLineChart";
 
 function DoctorAnalyticsCharts({ patients }) {
   const [ageRiskLimit, setAgeRiskLimit] = useState(60);
@@ -74,23 +76,15 @@ function DoctorAnalyticsCharts({ patients }) {
           data={analytics.monitoringPriorityGroups}
         />
 
-        <DashboardBarChart
-          title="Last Pain Level Distribution"
-          description="Based on each patient's latest pain report."
-          data={analytics.painLevelGroups}
-        />
+        
 
-        <DashboardBarChart
+        <DashboardPieChart
           title="Clinical Status Distribution"
           description="Current patient status according to latest pain level."
           data={analytics.statusGroups}
         />
 
-        <DashboardBarChart
-          title="Report Activity"
-          description="How active patients are in submitting reports."
-          data={analytics.reportActivityGroups}
-        />
+        
 
         <DashboardBarChart
           title="Medication in Latest Report"
@@ -101,6 +95,13 @@ function DoctorAnalyticsCharts({ patients }) {
           title="Recent Report Coverage"
           description="Shows whether patients submitted a report in the last 7 days."
           data={analytics.recentReportGroups}
+        />
+
+        <DashboardLineChart
+          title="Average Pain by Age Group"
+          description="Average latest pain level for each age group."
+          data={analytics.averagePainByAgeGroups}
+          valueSuffix="/10"
         />
       </div>
     </div>

@@ -73,7 +73,10 @@ function DoctorNotesPanel({ patients }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5 mt-6">
+    <section
+      id="doctor-notes-section"
+      className="scroll-mt-32 bg-white border border-gray-200 rounded-xl p-5 mt-6"
+    >
       <h3 className="text-xl font-bold text-gray-800 mb-2">Doctor Notes</h3>
 
       <p className="text-gray-600 mb-4">
@@ -108,9 +111,7 @@ function DoctorNotesPanel({ patients }) {
           />
         </div>
 
-        {error && (
-          <p className="text-red-600 text-sm font-medium">{error}</p>
-        )}
+        {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
 
         {message && (
           <p className="text-green-700 text-sm font-medium bg-green-50 border border-green-200 rounded-lg p-2">
@@ -155,7 +156,7 @@ function DoctorNotesPanel({ patients }) {
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 

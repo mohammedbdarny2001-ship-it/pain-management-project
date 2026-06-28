@@ -10,7 +10,7 @@ function PainAssistantChatbot() {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "Hello, I am PainCare Assistant. How can I help you today?",
+      text: "Hello, I am PainCare Assistant. I can help classify your latest pain report, explain your general status, and compare your pain type with clinic data.",
     },
   ]);
 
@@ -81,9 +81,9 @@ function PainAssistantChatbot() {
   };
 
   const quickMessages = [
-    "I have high pain today",
-    "I feel burning pain",
-    "What should I write in my pain report?",
+    "Classify my pain and tell me my general status",
+    "Compare my pain type with other patients",
+    "What should I do based on my latest pain report?",
     "How can I track my medication?",
   ];
 
@@ -93,12 +93,12 @@ function PainAssistantChatbot() {
       className="scroll-mt-32 bg-white rounded-2xl shadow-md p-6"
     >
       <div className="mb-4">
-        <h2 className="text-2xl font-bold text-slate-800">
+        <h2 className="text-2xl font-bold text-blue-700">
           Pain Assistant Chatbot
         </h2>
         <p className="text-slate-500 mt-1">
-          Ask general questions about pain tracking, medication reminders, and
-          daily reports.
+          Ask the chatbot to classify your latest pain report, explain your general
+          status, compare your pain type with clinic data, and suggest safe next steps.
         </p>
       </div>
 

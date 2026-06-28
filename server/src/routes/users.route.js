@@ -115,4 +115,69 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Update user profile
+router.put("/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { name, age, diagnosis, physician, password } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required",
+      });
+    }
+
+    user.name = name.trim();
+
+    if (age !== undefined) {
+      user.age = age === "" ? undefined : Number(age);
+    }
+
+    if (diagnosis !== undefined) {
+      user.diagnosis = diagnosis;
+    }
+
+    if (physician !== undefined) {
+      user.physician = physician;
+    }
+
+    if (password && password.trim()) {
+      user.password = password;
+    }
+
+    await user.save();
+
+    const userWithoutPassword = {
+      username: user.username,
+      role: user.role,
+      name: user.name,
+      age: user.age,
+      diagnosis: user.diagnosis,
+      physician: user.physician,
+    };
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating profile",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

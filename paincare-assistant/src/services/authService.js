@@ -69,3 +69,34 @@ export async function registerPatient(patientData) {
     };
   }
 }
+export async function updateUserProfile(username, profileData) {
+  try {
+    const response = await fetch(`${API_URL}/${username}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(profileData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Profile update failed",
+      };
+    }
+
+    return {
+      success: true,
+      user: data.user,
+      message: data.message,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Cannot connect to server",
+    };
+  }
+}

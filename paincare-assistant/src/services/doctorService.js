@@ -188,11 +188,12 @@ export function buildDoctorAnalytics(patients, ageRiskLimit = 60) {
       riskAge
     ),
 
-    painLevelGroups: buildPainLevelGroups(patientList),
+    
     statusGroups: buildStatusGroups(patientList),
-    reportActivityGroups: buildReportActivityGroups(patientList),
+    
     medicationGroups: buildMedicationGroups(patientList),
     recentReportGroups: buildRecentReportGroups(patientList),
+    averagePainByAgeGroups: buildAveragePainByAgeGroups(patientList, riskAge),
   };
 }
 
@@ -242,40 +243,6 @@ function buildMonitoringPriorityGroups(patients, riskAge) {
   ];
 }
 
-function buildPainLevelGroups(patients) {
-  return [
-    {
-      label: "No reports",
-      value: patients.filter((patient) => !hasPainReport(patient)).length,
-    },
-    {
-      label: "Mild pain 0-3",
-      value: patients.filter((patient) => {
-        return (
-          hasPainReport(patient) &&
-          Number(patient.lastPain) >= 0 &&
-          Number(patient.lastPain) <= 3
-        );
-      }).length,
-    },
-    {
-      label: "Moderate pain 4-6",
-      value: patients.filter((patient) => {
-        return (
-          hasPainReport(patient) &&
-          Number(patient.lastPain) >= 4 &&
-          Number(patient.lastPain) <= 6
-        );
-      }).length,
-    },
-    {
-      label: "Severe pain 7-10",
-      value: patients.filter((patient) => {
-        return hasPainReport(patient) && Number(patient.lastPain) >= 7;
-      }).length,
-    },
-  ];
-}
 
 function buildStatusGroups(patients) {
   return [
@@ -302,34 +269,7 @@ function buildStatusGroups(patients) {
   ];
 }
 
-function buildReportActivityGroups(patients) {
-  return [
-    {
-      label: "No reports",
-      value: patients.filter((patient) => Number(patient.reportsCount) === 0)
-        .length,
-    },
-    {
-      label: "1-2 reports",
-      value: patients.filter((patient) => {
-        const count = Number(patient.reportsCount);
-        return count >= 1 && count <= 2;
-      }).length,
-    },
-    {
-      label: "3-5 reports",
-      value: patients.filter((patient) => {
-        const count = Number(patient.reportsCount);
-        return count >= 3 && count <= 5;
-      }).length,
-    },
-    {
-      label: "6+ reports",
-      value: patients.filter((patient) => Number(patient.reportsCount) >= 6)
-        .length,
-    },
-  ];
-}
+
 
 function buildMedicationGroups(patients) {
   return [
@@ -408,4 +348,61 @@ function buildRecentReportGroups(patients) {
       value: notReportedRecently.length,
     },
   ];
+}
+
+function buildAveragePainByAgeGroups(patients, riskAge) {
+  return [
+    {
+      label: "Under 13",
+      value: calculateAveragePain(
+        patients.filter((patient) => {
+          const age = Number(patient.age);
+          return Number.isFinite(age) && age > 0 && age < 13;
+        })
+      ),
+    },
+    {
+      label: "13-19",
+      value: calculateAveragePain(
+        patients.filter((patient) => {
+          const age = Number(patient.age);
+          return Number.isFinite(age) && age >= 13 && age <= 19;
+        })
+      ),
+    },
+    {
+      label: `20-${riskAge - 1}`,
+      value: calculateAveragePain(
+        patients.filter((patient) => {
+          const age = Number(patient.age);
+          return Number.isFinite(age) && age >= 20 && age < riskAge;
+        })
+      ),
+    },
+    {
+      label: `${riskAge}+`,
+      value: calculateAveragePain(
+        patients.filter((patient) => {
+          const age = Number(patient.age);
+          return Number.isFinite(age) && age >= riskAge;
+        })
+      ),
+    },
+  ];
+}
+
+function calculateAveragePain(patients) {
+  const patientsWithPain = patients.filter((patient) => {
+    return patient.lastPain !== null && patient.lastPain !== undefined;
+  });
+
+  if (patientsWithPain.length === 0) {
+    return 0;
+  }
+
+  const totalPain = patientsWithPain.reduce((sum, patient) => {
+    return sum + Number(patient.lastPain);
+  }, 0);
+
+  return Number((totalPain / patientsWithPain.length).toFixed(1));
 }
