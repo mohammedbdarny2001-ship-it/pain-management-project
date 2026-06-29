@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/doctor-notes";
+const API_URL = "https://pain-management.onrender.com/api/doctor-notes";
 
 export async function addDoctorNote(noteData) {
   try {

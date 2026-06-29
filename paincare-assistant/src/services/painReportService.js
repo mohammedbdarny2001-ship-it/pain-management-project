@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/pain-reports";
+const API_URL = "https://pain-management.onrender.com/api/pain-reports";
 
 export async function savePainReport(reportData) {
   try {

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/chatbot";
+const API_URL = "https://pain-management.onrender.com/api/chatbot";
 
 export async function sendChatMessage(message, patientContext = {}) {
   try {
