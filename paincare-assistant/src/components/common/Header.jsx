@@ -1,4 +1,8 @@
+import { useTheme } from "../../context/ThemeContext";
+
 function Header({ role, onOpenPersonalArea }) {
+  const { darkMode, toggleDarkMode } = useTheme();
+
   function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId);
 
@@ -55,13 +59,18 @@ function Header({ role, onOpenPersonalArea }) {
             </button>
 
             <button
-               onClick={onOpenPersonalArea}
-               className="bg-yellow-100 text-yellow-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-yellow-200"
+              onClick={onOpenPersonalArea}
+              className="bg-yellow-100 text-yellow-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-yellow-200"
             >
-               Personal Area
+              Personal Area
             </button>
 
-            
+            <button
+              onClick={toggleDarkMode}
+              className="bg-slate-800 text-white px-8 py-4 rounded-xl text-xl font-bold hover:bg-slate-700"
+            >
+              {darkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
         </div>
       </header>
@@ -112,12 +121,18 @@ function Header({ role, onOpenPersonalArea }) {
           </button>
 
           <button
-             onClick={onOpenPersonalArea}
-             className="bg-yellow-100 text-yellow-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-yellow-200"
-           >
-             Personal Area
-           </button>
+            onClick={onOpenPersonalArea}
+            className="bg-yellow-100 text-yellow-700 px-8 py-4 rounded-xl text-xl font-bold hover:bg-yellow-200"
+          >
+            Personal Area
+          </button>
 
+          <button
+            onClick={toggleDarkMode}
+            className="bg-slate-800 text-white px-8 py-4 rounded-xl text-xl font-bold hover:bg-slate-700"
+          >
+            {darkMode ? "Light Mode" : "Dark Mode"}
+          </button>
         </div>
       </div>
     </header>

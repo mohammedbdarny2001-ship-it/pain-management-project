@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { loginUser } from "../../services/authService";
 import { useUser } from "../../context/UserContext";
+import { useTheme } from "../../context/ThemeContext";
 
 function Login({ onShowRegister }) {
   const { login } = useUser();
+  const { darkMode, toggleDarkMode } = useTheme();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -30,12 +33,20 @@ function Login({ onShowRegister }) {
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-blue-700 mb-2">
+        <h1 className="text-2xl font-bold text-center text-blue-700 mb-3">
           PainCare Assistant
         </h1>
 
+        <button
+          type="button"
+          onClick={toggleDarkMode}
+          className="block mx-auto mb-5 bg-slate-800 text-white px-5 py-2 rounded-lg text-base font-semibold hover:bg-slate-700"
+        >
+          {darkMode ? "Light Mode" : "Dark Mode"}
+        </button>
+
         <p className="text-center text-gray-600 mb-6">
-          Login as Patient or Doctor
+          Login as Patient or Doctor or Admin
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,20 +90,6 @@ function Login({ onShowRegister }) {
           New patient? Register here
         </button>
 
-        <button
-          type="button"
-          onClick={() =>
-            login({
-              username: "admin1",
-              role: "admin",
-              name: "Admin",
-            })
-          }
-          className="w-full mt-2 text-purple-700 font-medium hover:underline"
-        >
-          Login as Admin
-        </button>
-
         <div className="mt-6 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
           <p className="font-semibold mb-1">Demo users:</p>
           <p>
@@ -100,6 +97,9 @@ function Login({ onShowRegister }) {
           </p>
           <p>
             <strong>Doctor:</strong> doctor1 / 1234
+          </p>
+          <p>
+            <strong>Admin:</strong> admin1 / 1234
           </p>
         </div>
       </div>

@@ -1,7 +1,33 @@
 const express = require("express");
 const User = require("../models/User");
+const PainReport = require("../models/PainReport");
+const Medication = require("../models/Medication");
+const DoctorNote = require("../models/DoctorNote");
 
 const router = express.Router();
+async function isAdmin(adminUsername) {
+  if (!adminUsername) {
+    return false;
+  }
+
+  const admin = await User.findOne({
+    username: adminUsername,
+    role: "admin",
+  });
+
+  return Boolean(admin);
+}
+
+function removePassword(user) {
+  return {
+    username: user.username,
+    role: user.role,
+    name: user.name,
+    age: user.age,
+    diagnosis: user.diagnosis,
+    physician: user.physician,
+  };
+}
 
 // Register new user
 router.post("/register", async (req, res) => {
@@ -234,5 +260,223 @@ router.put("/:username", async (req, res) => {
     });
   }
 });
+
+// Get users by role
+router.get("/by-role/:role", async (req, res) => {
+  try {
+    const { role } = req.params;
+
+    if (!["patient", "doctor", "admin"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role",
+      });
+    }
+
+    const users = await User.find({ role }, { password: 0 }).sort({
+      createdAt: -1,
+    });
+
+    res.json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching users by role",
+      error: error.message,
+    });
+  }
+});
+
+// Admin creates doctor or patient
+router.post("/admin/create", async (req, res) => {
+  try {
+    const {
+      adminUsername,
+      username,
+      password,
+      role,
+      name,
+      age,
+      diagnosis,
+      physician,
+    } = req.body;
+
+    const allowed = await isAdmin(adminUsername);
+
+    if (!allowed) {
+      return res.status(403).json({
+        success: false,
+        message: "Only admin can perform this action",
+      });
+    }
+
+    if (!["patient", "doctor"].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Admin can create only patient or doctor users",
+      });
+    }
+
+    if (!username || !password || !name) {
+      return res.status(400).json({
+        success: false,
+        message: "Username, password and name are required",
+      });
+    }
+
+    const existingUser = await User.findOne({ username });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already exists",
+      });
+    }
+
+    const newUser = new User({
+      username,
+      password,
+      role,
+      name,
+      age,
+      diagnosis: role === "patient" ? diagnosis : "",
+      physician: physician || "",
+    });
+
+    await newUser.save();
+
+    res.status(201).json({
+      success: true,
+      message: `${role} created successfully`,
+      user: removePassword(newUser),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while creating user",
+      error: error.message,
+    });
+  }
+});
+
+// Admin deletes doctor or patient
+router.delete("/admin/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { adminUsername } = req.body;
+
+    const allowed = await isAdmin(adminUsername);
+
+    if (!allowed) {
+      return res.status(403).json({
+        success: false,
+        message: "Only admin can perform this action",
+      });
+    }
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.role === "admin") {
+      return res.status(400).json({
+        success: false,
+        message: "Admin users cannot be deleted from this panel",
+      });
+    }
+
+    if (user.role === "patient") {
+      await PainReport.deleteMany({ patientUsername: username });
+      await Medication.deleteMany({ patientUsername: username });
+      await DoctorNote.deleteMany({ patientUsername: username });
+    }
+
+    if (user.role === "doctor") {
+      await DoctorNote.deleteMany({ doctorUsername: username });
+
+      await User.updateMany(
+        { role: "patient", physician: user.name },
+        { $set: { physician: "" } }
+      );
+    }
+
+    await User.deleteOne({ username });
+
+    res.json({
+      success: true,
+      message: `${user.role} deleted successfully`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting user",
+      error: error.message,
+    });
+  }
+});
+
+// Admin assigns patient to another doctor
+router.put("/admin/assign-doctor", async (req, res) => {
+  try {
+    const { adminUsername, patientUsername, doctorUsername } = req.body;
+
+    const allowed = await isAdmin(adminUsername);
+
+    if (!allowed) {
+      return res.status(403).json({
+        success: false,
+        message: "Only admin can perform this action",
+      });
+    }
+
+    const patient = await User.findOne({
+      username: patientUsername,
+      role: "patient",
+    });
+
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found",
+      });
+    }
+
+    const doctor = await User.findOne({
+      username: doctorUsername,
+      role: "doctor",
+    });
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    patient.physician = doctor.name;
+    await patient.save();
+
+    res.json({
+      success: true,
+      message: "Patient doctor updated successfully",
+      patient: removePassword(patient),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while assigning doctor",
+      error: error.message,
+    });
+  }
+});
+
 
 module.exports = router;

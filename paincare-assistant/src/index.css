@@ -1,1 +1,108 @@
 @import "tailwindcss";
+.dark-mode body {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}
+
+.dark-mode .bg-slate-100,
+.dark-mode .bg-gray-100 {
+  background-color: #0f172a !important;
+}
+
+.dark-mode .bg-white {
+  background-color: #1e293b !important;
+  color: #e5e7eb !important;
+}
+
+.dark-mode .bg-gray-50,
+.dark-mode .bg-slate-50 {
+  background-color: #334155 !important;
+  color: #e5e7eb !important;
+}
+
+.dark-mode .text-gray-800,
+.dark-mode .text-slate-800,
+.dark-mode .text-gray-700,
+.dark-mode .text-slate-700 {
+  color: #e5e7eb !important;
+}
+
+.dark-mode .text-gray-600,
+.dark-mode .text-slate-600,
+.dark-mode .text-gray-500,
+.dark-mode .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+.dark-mode .border-gray-200,
+.dark-mode .border-slate-200 {
+  border-color: #475569 !important;
+}
+
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select {
+  background-color: #0f172a !important;
+  color: #e5e7eb !important;
+  border-color: #64748b !important;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.dark-mode table {
+  color: #e5e7eb !important;
+}
+
+.dark-mode th {
+  background-color: #334155 !important;
+  color: #e5e7eb !important;
+}
+
+.dark-mode td {
+  background-color: #1e293b !important;
+  color: #e5e7eb !important;
+}
+
+.dark-mode .shadow,
+.dark-mode .shadow-md,
+.dark-mode .shadow-sm {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35) !important;
+}
+.dark-mode .bg-blue-50,
+.dark-mode .bg-green-50,
+.dark-mode .bg-red-50,
+.dark-mode .bg-yellow-50,
+.dark-mode .bg-purple-50,
+.dark-mode .bg-orange-50 {
+  background-color: #1e293b !important;
+}
+
+.dark-mode .bg-blue-100,
+.dark-mode .bg-green-100,
+.dark-mode .bg-red-100,
+.dark-mode .bg-yellow-100,
+.dark-mode .bg-purple-100,
+.dark-mode .bg-orange-100 {
+  background-color: #334155 !important;
+}
+
+.dark-mode .text-blue-700,
+.dark-mode .text-green-700,
+.dark-mode .text-red-700,
+.dark-mode .text-yellow-700,
+.dark-mode .text-purple-700,
+.dark-mode .text-orange-700 {
+  color: #93c5fd !important;
+}
+
+.dark-mode .border-blue-200,
+.dark-mode .border-green-200,
+.dark-mode .border-red-200,
+.dark-mode .border-yellow-200,
+.dark-mode .border-purple-200,
+.dark-mode .border-orange-200 {
+  border-color: #475569 !important;
+}
