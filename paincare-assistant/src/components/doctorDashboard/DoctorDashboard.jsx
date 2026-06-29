@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useUser } from "../../context/UserContext";
 import {
   getDoctorDashboardData,
   getTotalPatients,
@@ -14,9 +15,22 @@ import PatientClinicalSummary from "./PatientClinicalSummary";
 import DoctorAnalyticsCharts from "./DoctorAnalyticsCharts";
 
 function DoctorDashboard() {
+  const { currentUser } = useUser();
+
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  function isPatientAssignedToCurrentDoctor(patient) {
+    if (!currentUser || !currentUser.name || !patient.physician) {
+      return false;
+    }
+
+    return (
+      patient.physician.trim().toLowerCase() ===
+      currentUser.name.trim().toLowerCase()
+    );
+  }
 
   async function loadDashboardData() {
     setLoading(true);
@@ -32,12 +46,16 @@ function DoctorDashboard() {
       return;
     }
 
-    setPatients(result.patients);
+    const assignedPatients = result.patients.filter((patient) => {
+      return isPatientAssignedToCurrentDoctor(patient);
+    });
+
+    setPatients(assignedPatients);
   }
 
   useEffect(() => {
     loadDashboardData();
-  }, []);
+  }, [currentUser]);
 
   const totalPatients = getTotalPatients(patients);
   const highPainPatients = getHighPainPatients(patients);
@@ -45,14 +63,18 @@ function DoctorDashboard() {
   const clinicalSummaries = buildClinicalSummary(patients);
 
   return (
-    <section id="doctor-dashboard-section" className="bg-white rounded-2xl shadow p-6 scroll-mt-32">
+    <section
+      id="doctor-dashboard-section"
+      className="bg-white rounded-2xl shadow p-6 scroll-mt-32"
+    >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-green-700">
             Doctor Dashboard
           </h2>
           <p className="text-gray-600">
-            Review patient pain reports, alerts and clinical status from MongoDB.
+            Review your assigned patients, pain reports, alerts and clinical
+            status from MongoDB.
           </p>
         </div>
 
@@ -81,12 +103,15 @@ function DoctorDashboard() {
             highPainCount={highPainPatients.length}
             averagePainLevel={averagePainLevel}
           />
+
           <DoctorAnalyticsCharts patients={patients} />
 
           <AbnormalPainAlerts patients={highPainPatients} />
 
           <PatientTable patients={patients} />
+
           <PatientClinicalSummary summaries={clinicalSummaries} />
+
           <DoctorNotesPanel patients={patients} />
         </>
       )}
